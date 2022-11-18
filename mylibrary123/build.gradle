@@ -1,7 +1,28 @@
 plugins {
     id 'com.android.library'
 }
+ext {
 
+    bintrayRepo = 'android'
+    bintrayName = 'androidautoimageslider'
+
+    publishedGroupId = 'com.github.manojsharma94'
+    libraryName = 'Abx'
+    artifact = 'Abx'
+
+    libraryDescription = 'Simple, android image slider'
+
+    siteUrl = 'https://github.com/smarteist'
+    gitUrl = 'https://github.com/smarteist/android-image-slider.git'
+
+    libraryVersion = '1.2.0'
+
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+
+}
 android {
     namespace 'com.kot.mylibrary123'
     compileSdk 32
