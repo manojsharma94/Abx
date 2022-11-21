@@ -2,7 +2,7 @@ package com.kot.mylibrary123.Model;
 
 public class Sub_problem {
     String name;
-    boolean check;
+    boolean check=false;
 
     public Sub_problem(String name) {
         this.name = name;

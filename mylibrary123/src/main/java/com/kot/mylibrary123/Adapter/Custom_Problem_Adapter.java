@@ -23,6 +23,7 @@ public class Custom_Problem_Adapter extends RecyclerView.Adapter<Custom_Problem_
     List<Sub_problem>sub_problemList=new ArrayList<>();
     Sub_problem_dapter sub_problem_dapter;
 
+
     public Custom_Problem_Adapter(Context context, List<Problem_model> list) {
         this.context = context;
         this.list = list;
@@ -46,7 +47,19 @@ public class Custom_Problem_Adapter extends RecyclerView.Adapter<Custom_Problem_
             sub_problemList.add(new Sub_problem(list.get(position).getProblem_list().get(i).getName()));
             sub_problem_dapter.notifyDataSetChanged();
             }
-
+        holder.name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(list.get(position).isCheck()){
+                    holder.sub_problem_recy.setVisibility(View.GONE);
+                    list.get(position).setCheck(false);
+                }
+                else {
+                    holder.sub_problem_recy.setVisibility(View.VISIBLE);
+                    list.get(position).setCheck(true);
+                }
+            }
+        });
 
 
 
