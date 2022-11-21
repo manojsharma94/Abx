@@ -1,4 +1,5 @@
 <resources>
     <string name="test">this is test</string>
     <string name="todo">TODO</string>
+    <string name="add_image">Add Image</string>
 </resources>
