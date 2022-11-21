@@ -80,17 +80,6 @@ public class Dashboard extends AppCompatActivity {
                 btn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        /*final_data=new ArrayList<>();
-                        for(int i =0;i<list.size();i++){
-                            for(int j=0;j<list.get(i).getProblem_list().size();j++){
-                                Log.i("SAdsfsf",list.get(i).getProblem_list().get(j).isCheck()+"");
-
-                                if(list.get(i).getProblem_list().get(j).isCheck()){
-                                    final_data.add(list.get(i).getProblem_list().get(j).getName());
-                                    Log.i("SAdsfsf",list.get(i).getProblem_list().get(j).getName());
-                                }
-                            }
-                        }*/
                         bottomSheet.dismiss();
                         custom_selected_problem.notifyDataSetChanged();
                         Log.i("SAdsfsf",Dashboard.finaldata.toString());
