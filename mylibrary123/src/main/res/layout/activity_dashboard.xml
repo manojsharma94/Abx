@@ -6,28 +6,29 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#e2e2e2"
+    android:background="#e8e8e8"
     tools:context=".Dashboard">
     <androidx.cardview.widget.CardView
+
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardElevation="5dp"
+        android:elevation="5dp"
         app:cardCornerRadius="10dp">
 
     <RelativeLayout
+        android:padding="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <TextView
             android:layout_alignParentTop="true"
-            android:gravity="center"
             android:id="@+id/img_txt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/add_image"
-            android:padding="10dp"
+            android:padding="5dp"
             android:textSize="16sp"
             android:textColor="#000000"/>
         <de.hdodenhof.circleimageview.CircleImageView
@@ -36,21 +37,57 @@
             android:layout_height="100dp"
             android:layout_centerHorizontal="true"
             android:layout_centerInParent="true"
-            app:civ_border_width="2dp"
+            app:civ_border_width="1dp"
             app:civ_border_color="#FF000000"
-            android:src="@drawable/ic_baseline_camera_alt_24"
+            android:src="@drawable/camera"
             android:id="@+id/img"/>
-        <ImageView
-            android:layout_marginTop="-5dp"
+        <androidx.cardview.widget.CardView
             android:layout_alignEnd="@id/img"
             android:layout_below="@id/img"
+            android:layout_marginTop="-20dp"
+            app:cardCornerRadius="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        <ImageView
             android:id="@+id/add_img"
             android:layout_width="30sp"
             android:layout_height="30dp"
             android:src="@drawable/ic_baseline_add_24"
             android:contentDescription="@string/todo" />
+        </androidx.cardview.widget.CardView>
     </RelativeLayout>
     </androidx.cardview.widget.CardView>
+    <androidx.cardview.widget.CardView
+
+        android:layout_marginTop="10dp"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardElevation="5dp"
+        android:elevation="5dp"
+        app:cardCornerRadius="10dp">
+
+        <LinearLayout
+            android:padding="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_alignParentTop="true"
+                android:id="@+id/problem_txt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Problem"
+                android:padding="5dp"
+                android:textSize="16sp"
+                android:textColor="#000000"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/problem_recy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
 
 
 
