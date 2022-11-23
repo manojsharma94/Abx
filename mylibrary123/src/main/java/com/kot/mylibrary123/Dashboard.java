@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.kot.mylibrary123.Adapter.Custom_Pages_Adapter;
 import com.kot.mylibrary123.Adapter.Custom_Problem_Adapter;
 import com.kot.mylibrary123.Adapter.Custom_selected_problem;
 import com.kot.mylibrary123.Model.Problem_model;
@@ -22,21 +23,34 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Dashboard extends AppCompatActivity {
-    RecyclerView problem_recy;
+   /* RecyclerView problem_recy;
     Custom_Problem_Adapter adapter;
     List<Problem_model>list;
     List<Sub_problem>sub_list,sub_list1,sub_list2;
     TextView name;
     RecyclerView selected_recy;
-    Custom_selected_problem custom_selected_problem;
+    Custom_selected_problem custom_selected_problem;*/
    // List<String>final_data;
+    RecyclerView page_recy;
+    Custom_Pages_Adapter custom_pages_adapter;
     public static List<String>finaldata=new ArrayList<>();
+    List<Problem_model>data;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
         getSupportActionBar().setTitle("Audit");
-        name=findViewById(R.id.name);
+        page_recy=findViewById(R.id.page_recy);
+        page_recy.setLayoutManager(new LinearLayoutManager(Dashboard.this));
+        data=new ArrayList<>();
+        List<Sub_problem>data1=new ArrayList<>();
+        data1.add(new Sub_problem(""));
+        data.add(new Problem_model("abc",data1));
+        data.add(new Problem_model("abc",data1));
+        data.add(new Problem_model("abc",data1));
+        custom_pages_adapter=new Custom_Pages_Adapter(Dashboard.this,data);
+        page_recy.setAdapter(custom_pages_adapter);
+      /*  name=findViewById(R.id.name);
         selected_recy=findViewById(R.id.selected_problem_recy);
         selected_recy.setLayoutManager(new StaggeredGridLayoutManager(3, LinearLayoutManager.VERTICAL));
         custom_selected_problem=new Custom_selected_problem(finaldata,Dashboard.this);
@@ -86,6 +100,7 @@ public class Dashboard extends AppCompatActivity {
                     }
                 });
             }
-        });
+        });*/
+
     }
 }
