@@ -1,8 +1,21 @@
 package com.kot.mylibrary123.Model;
 
+import android.net.Uri;
+
+import java.util.List;
+
 public class Sub_problem {
     String name;
     boolean check=false;
+    List<Uri>img;
+
+    public List<Uri> getImg() {
+        return img;
+    }
+
+    public void setImg(List<Uri> img) {
+        this.img = img;
+    }
 
     public Sub_problem(String name) {
         this.name = name;

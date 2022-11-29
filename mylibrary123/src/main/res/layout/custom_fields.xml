@@ -38,6 +38,7 @@
                 android:src="@drawable/camera"
                 android:id="@+id/img"/>
             <androidx.cardview.widget.CardView
+                android:id="@+id/card_add_img"
                 android:layout_alignEnd="@id/img"
                 android:layout_below="@id/img"
                 android:layout_marginTop="-20dp"

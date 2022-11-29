@@ -1,28 +1,42 @@
 package com.kot.mylibrary123;
 
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission_group.CAMERA;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
+import android.widget.Toast;
 
-import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.kot.mylibrary123.Adapter.Custom_Pages_Adapter;
-import com.kot.mylibrary123.Adapter.Custom_Problem_Adapter;
-import com.kot.mylibrary123.Adapter.Custom_selected_problem;
+import com.kot.mylibrary123.Interface.Checkiner;
 import com.kot.mylibrary123.Model.Problem_model;
 import com.kot.mylibrary123.Model.Sub_problem;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Dashboard extends AppCompatActivity {
+public class Dashboard extends AppCompatActivity implements  Checkiner{
    /* RecyclerView problem_recy;
     Custom_Problem_Adapter adapter;
     List<Problem_model>list;
@@ -31,25 +45,57 @@ public class Dashboard extends AppCompatActivity {
     RecyclerView selected_recy;
     Custom_selected_problem custom_selected_problem;*/
    // List<String>final_data;
+    public  static MutableLiveData<String>liveData=new MutableLiveData<>();
+
+    String[] PERMISSIONS = {android.Manifest.permission.CAMERA,
+            android.Manifest.permission.ACCESS_COARSE_LOCATION,
+            android.Manifest.permission.ACCESS_FINE_LOCATION,
+            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            android.Manifest.permission.READ_EXTERNAL_STORAGE,
+            android.Manifest.permission.RECORD_AUDIO,
+            android.Manifest.permission.READ_PHONE_STATE};
+    List<Sub_problem>data1;
     RecyclerView page_recy;
     Custom_Pages_Adapter custom_pages_adapter;
     public static List<String>finaldata=new ArrayList<>();
     List<Problem_model>data;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
         getSupportActionBar().setTitle("Audit");
+        Dexter.withContext(Dashboard.this)
+                .withPermissions(PERMISSIONS)
+                .withListener(new MultiplePermissionsListener() {
+                    @SuppressLint("MissingPermission")
+                    @Override
+                    public void onPermissionsChecked(MultiplePermissionsReport multiplePermissionsReport) {
+                        if (multiplePermissionsReport.areAllPermissionsGranted()) {
+
+                        } else {
+                            Toast.makeText(Dashboard.this, "Check Permissions in Settings", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> list, PermissionToken permissionToken) {
+
+                    }
+                }).check();
         page_recy=findViewById(R.id.page_recy);
+        getdata("safdsfdsf");
         page_recy.setLayoutManager(new LinearLayoutManager(Dashboard.this));
         data=new ArrayList<>();
-        List<Sub_problem>data1=new ArrayList<>();
+        data1=new ArrayList<>();
         data1.add(new Sub_problem(""));
         data.add(new Problem_model("abc",data1));
         data.add(new Problem_model("abc",data1));
         data.add(new Problem_model("abc",data1));
         custom_pages_adapter=new Custom_Pages_Adapter(Dashboard.this,data);
         page_recy.setAdapter(custom_pages_adapter);
+        liveData.setValue("sadshdsfkjh");
+
       /*  name=findViewById(R.id.name);
         selected_recy=findViewById(R.id.selected_problem_recy);
         selected_recy.setLayoutManager(new StaggeredGridLayoutManager(3, LinearLayoutManager.VERTICAL));
@@ -101,6 +147,56 @@ public class Dashboard extends AppCompatActivity {
                 });
             }
         });*/
+
+    }
+    public static boolean hasPermissions(Context context, String... permissions) {
+        if (context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    private boolean checkPermission() {
+        int result = ContextCompat.checkSelfPermission(getApplicationContext(), ACCESS_FINE_LOCATION);
+        int result1 = ContextCompat.checkSelfPermission(getApplicationContext(), CAMERA);
+
+        return result1 == PackageManager.PERMISSION_GRANTED && result1 == PackageManager.PERMISSION_GRANTED;
+    }
+
+
+
+    private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
+        new AlertDialog.Builder(Dashboard.this)
+                .setMessage(message)
+                .setPositiveButton("OK", okListener)
+                .setNegativeButton("Cancel", null)
+                .create()
+                .show();
+    }
+
+
+    @Override
+    public void getdata(String name) {
+
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        getdata("manoj");
+       // liveData.setValue("hello manoj");
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Uri selectedImageURI = data.getData();
+        Log.i("fasdfs",selectedImageURI.toString());
+
 
     }
 }

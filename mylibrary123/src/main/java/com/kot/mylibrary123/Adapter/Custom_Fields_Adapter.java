@@ -3,6 +3,7 @@ package com.kot.mylibrary123.Adapter;
 import static com.kot.mylibrary123.Dashboard.finaldata;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -92,6 +94,13 @@ public class Custom_Fields_Adapter extends RecyclerView.Adapter<Custom_Fields_Ad
                 });
             }
         });
+        holder.card_add_img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -100,11 +109,13 @@ public class Custom_Fields_Adapter extends RecyclerView.Adapter<Custom_Fields_Ad
     }
 
     public class Object extends RecyclerView.ViewHolder {
+        CardView card_add_img;
         RecyclerView selected_recy;
         TextView name;
         public Object(@NonNull View itemView) {
             super(itemView);
             name=itemView.findViewById(R.id.name);
+            card_add_img=itemView.findViewById(R.id.card_add_img);
             selected_recy=itemView.findViewById(R.id.selected_problem_recy);
         }
     }

@@ -4,15 +4,14 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
-import com.kot.mylibrary123.Dashboard;
 import com.kot.mylibrary123.Model.Problem_model;
 import com.kot.mylibrary123.R;
 
@@ -53,10 +52,12 @@ public class Custom_Pages_Adapter extends RecyclerView.Adapter<Custom_Pages_Adap
                 if(list.get(holder.getAdapterPosition()).isCheck()){
                     holder.page_recy.setVisibility(View.GONE);
                     list.get(holder.getAdapterPosition()).setCheck(false);
+                    holder.up_down.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24);
                 }
                 else {
                     holder.page_recy.setVisibility(View.VISIBLE);
                     list.get(holder.getAdapterPosition()).setCheck(true);
+                    holder.up_down.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24);
                 }
             }
         });
@@ -72,9 +73,12 @@ public class Custom_Pages_Adapter extends RecyclerView.Adapter<Custom_Pages_Adap
         RelativeLayout page_open_lay;
         TextView page_num_text;
         RecyclerView page_recy;
+        ImageView up_down;
 
         public Object(@NonNull View itemView) {
             super(itemView);
+
+            up_down=itemView.findViewById(R.id.up_down);
             page_open_lay=itemView.findViewById(R.id.page_open_lay);
             page_recy=itemView.findViewById(R.id.page_recy);
             page_num_text=itemView.findViewById(R.id.page_num_text);
