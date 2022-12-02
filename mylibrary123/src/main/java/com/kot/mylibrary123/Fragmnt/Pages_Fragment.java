@@ -3,12 +3,23 @@ package com.kot.mylibrary123.Fragmnt;
 import static com.kot.mylibrary123.Dashboard.finaldata;
 
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Point;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -23,25 +34,41 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.kot.mylibrary123.Adapter.Custom_Image_Adapter;
 import com.kot.mylibrary123.Adapter.Custom_Problem_Adapter;
 import com.kot.mylibrary123.Adapter.Custom_selected_problem;
+import com.kot.mylibrary123.Helper;
 import com.kot.mylibrary123.Model.Problem_model;
 import com.kot.mylibrary123.Model.Sub_problem;
 import com.kot.mylibrary123.R;
+import com.kot.mylibrary123.Taskclick.ProcessedTask;
+import com.kot.mylibrary123.Taskclick.TaskClickerInteractor;
+import com.kot.mylibrary123.Taskclick.TaskClickerMvpPresenter;
+import com.kot.mylibrary123.Taskclick.TaskClickerMvpView;
+import com.kot.mylibrary123.Taskclick.TaskClickerPresenter;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class Pages_Fragment extends Fragment {
+public class Pages_Fragment extends Fragment implements TaskClickerMvpView {
+    private static final String TAG = "Page";
     LinearLayout img_layout;
+    private static final int REQUEST_CAPTURE_MEDIA = 11111;
     private static final int pic_id = 123;
     RecyclerView problem_recy;
+    private TaskClickerMvpPresenter taskClickerMvpPresenter;
     Custom_Problem_Adapter adapter;
     List<Problem_model>list1;
     List<Sub_problem>sub_list,sub_list1,sub_list2;
@@ -51,6 +78,16 @@ public class Pages_Fragment extends Fragment {
     List<Bitmap>image_list;
     TextView name;
     RecyclerView selected_recy;
+    private JSONObject siteImageColorsJsonObject;
+    private JSONArray siteImageHeadersJsonArray;
+    private JSONArray sitePreferencesJsonArray;
+    private static Context app;
+    private String file_name;
+    private String mCurrentPhotoPath;
+    public static Context getconet(){
+        return app;
+
+    }
     public static Pages_Fragment newInstance() {
         return new Pages_Fragment();
     }
@@ -69,7 +106,7 @@ public class Pages_Fragment extends Fragment {
         selected_recy=view.findViewById(R.id.selected_problem_recy);
         name=view.findViewById(R.id.name);
         img_layout=view.findViewById(R.id.img_lay);
-
+        app=getActivity();
         img_recy=view.findViewById(R.id.img_recy);
 
 
@@ -80,10 +117,22 @@ public class Pages_Fragment extends Fragment {
         img_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent camera_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(camera_intent, pic_id);
+                final Bundle bundle = new Bundle();
+                bundle.putDouble("lat",0.0);
+                bundle.putDouble("lng", 0.0);
+                bundle.putString("siteCode", "0060");
+                bundle.putString("siteId", "NA");
+                bundle.putString("timeTask", "t");
+                bundle.putString("taskType", "p");
+                bundle.putString("campaignId", "1234");
+                bundle.putString("monitor_type", "normal_monitor");
+                bundle.putString("campaign_name", "campaign_name_json");
+                dispatchTakePictureIntent();
+              /*  Intent camera_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(camera_intent, pic_id);*/
             }
         });
+        taskClickerMvpPresenter = new TaskClickerPresenter(this, new TaskClickerInteractor());
         name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -139,12 +188,112 @@ public class Pages_Fragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == pic_id && resultCode == Activity.RESULT_OK) {
-            // BitMap is data structure of image file which store the image in memory
-            Bitmap photo = (Bitmap) data.getExtras().get("data");
-            // Set the image in imageview for display
-            image_list.add(photo);
-            custom_image_adapter.notifyDataSetChanged();
+        if (requestCode == REQUEST_CAPTURE_MEDIA && resultCode == Activity.RESULT_OK) {
+            Bundle bundle =new Bundle();
+            bundle.putString("file_path", mCurrentPhotoPath);
+            bundle.putString("file_name", file_name);
+            taskClickerMvpPresenter.handleDoneTask(bundle,"image", siteImageColorsJsonObject, siteImageHeadersJsonArray);
         }
     }
+
+    @Override
+    public void showSiteCode(String site_code) {
+
+    }
+
+    @Override
+    public void showCampaignName(String campaign_name) {
+
+    }
+
+    @Override
+    public void showLocation(String lat_lng) {
+
+    }
+
+    @Override
+    public void showError(String error) {
+
+    }
+
+    @Override
+    public void showLocationPrompt() {
+
+    }
+
+    @Override
+    public void showProgress() {
+
+    }
+
+    @Override
+    public void hideProgress() {
+
+    }
+
+    @Override
+    public void addToArray(String processedTask) {
+
+        File imgFile = new  File(processedTask);
+
+        if(imgFile.exists()){
+
+            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+
+            image_list.add(myBitmap);
+            custom_image_adapter.notifyDataSetChanged();
+
+        }
+
+    }
+
+    @Override
+    public void openMainActivity() {
+
+    }
+
+    @Override
+    public void setUploadedByPrefrencesData(JSONArray sitePrefrencesJsonArray, JSONObject siteImageColorsJsonObject, JSONArray siteImageHeadersJsonArray) {
+        this.sitePreferencesJsonArray = sitePrefrencesJsonArray;
+        this.siteImageColorsJsonObject = siteImageColorsJsonObject;
+        this.siteImageHeadersJsonArray = siteImageHeadersJsonArray;
+
+    }
+
+
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent;
+
+            takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            file_name = "manoj"+ "_" + System.currentTimeMillis() + "_" + "_un" + ".jpg";
+
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile;
+            Uri photoURI = null;
+            try {
+                photoFile = Helper.createMediaFile(file_name);
+                mCurrentPhotoPath = photoFile.getAbsolutePath();
+
+                Log.i(TAG, "createImageFile() called" + mCurrentPhotoPath);
+                photoURI = FileProvider.getUriForFile(getActivity(), "com.kot.mylibrary123.fileprovider", photoFile);
+            } catch (Exception e) {
+                e.printStackTrace();
+                //LocadApp.getCrashlyticsLogger().recordException(e);
+                // Error occurred while creating the File
+                Toast.makeText(getActivity(), "Error Taking Picture, Please Choose Locad Camera", Toast.LENGTH_SHORT).show();
+            }
+            // Continue only if the File was successfully created
+            if (photoURI != null) {
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
+                    takePictureIntent.setClipData(ClipData.newRawUri("", photoURI));
+                    takePictureIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                }
+                startActivityForResult(takePictureIntent, REQUEST_CAPTURE_MEDIA);
+            }
+        }
+    }
+
 }

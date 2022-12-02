@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Taskclick.CameraViewActivity">
+    <com.otaliastudios.cameraview.CameraView
+        android:id="@+id/camera"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:keepScreenOn="true"
+        app:cameraAudio="on"
+        app:cameraAutoFocusMarker="@string/cameraview_default_autofocus_marker"
+        app:cameraEngine="camera2"
+        app:cameraExperimental="true"
+        app:cameraFacing="back"
+        app:cameraFlash="auto"
+        app:cameraDrawHardwareOverlays="true"
+        app:cameraGesturePinch="zoom"
+        app:cameraGestureLongTap="autoFocus"
+        app:cameraGestureScrollVertical="exposureCorrection"
+        app:cameraGestureTap="autoFocus"
+        app:cameraGrid="off"
+        app:cameraPlaySounds="true"
+        app:cameraPreview="glSurface"
+        app:cameraGestureScrollHorizontal="exposureCorrection"
+        app:cameraVideoCodec="h264">
+
+        <!--        <ImageView-->
+        <!--            android:id="@+id/watermark"-->
+        <!--            android:layout_width="72dp"-->
+        <!--            android:layout_height="72dp"-->
+        <!--            android:layout_gravity="top|end"-->
+        <!--            android:layout_margin="10dp"-->
+        <!--            android:src="@drawable/locad_seal"-->
+        <!--            app:layout_drawOnPictureSnapshot="true"-->
+        <!--            app:layout_drawOnPreview="true"-->
+        <!--            app:layout_drawOnVideoSnapshot="true" />-->
+
+        <!--        <TextView-->
+        <!--            android:layout_margin="10dp"-->
+        <!--            android:id="@+id/video_current_time"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:background="#44000000"-->
+        <!--            android:layout_gravity="bottom|start"-->
+        <!--            android:padding="10dp"-->
+        <!--            android:text="Current Time"-->
+        <!--            android:textColor="@color/text_white_color"-->
+        <!--            android:textSize="12dp"-->
+        <!--            android:visibility="visible"-->
+        <!--            app:layout_drawOnPreview="true"-->
+        <!--            app:layout_drawOnVideoSnapshot="true" />-->
+
+
+        <TextView
+            android:layout_gravity="top|start"
+            android:id="@+id/video_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="#44000000"
+            android:padding="10dp"
+            android:text="0.00"
+            android:textColor="#ffffff"
+            android:textSize="12dp"
+            android:visibility="visible"
+            app:layout_drawOnPreview="true"
+            app:layout_drawOnVideoSnapshot="true" />
+
+    </com.otaliastudios.cameraview.CameraView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+
+    </LinearLayout>
+
+    <!-- Controls -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="16dp"
+        android:orientation="horizontal">
+
+
+        <ImageButton
+            android:id="@+id/capturePicture"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_photo" />
+
+
+        <ImageButton
+            android:id="@+id/captureVideo"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_video" />
+
+
+    </LinearLayout>
+
+    <!-- Edit -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/controls"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:elevation="4dp"
+        app:behavior_hideable="true"
+        app:behavior_peekHeight="300dp"
+        app:behavior_skipCollapsed="false"
+        app:layout_behavior="@string/bottom_sheet_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
