@@ -2,10 +2,12 @@ package com.kot.mylibrary123.Fragmnt;
 
 import static com.kot.mylibrary123.Dashboard.finaldata;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,12 +15,16 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -32,11 +38,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.textfield.TextInputEditText;
 import com.kot.mylibrary123.Adapter.Custom_Image_Adapter;
 import com.kot.mylibrary123.Adapter.Custom_Problem_Adapter;
 import com.kot.mylibrary123.Adapter.Custom_selected_problem;
@@ -55,14 +67,19 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class Pages_Fragment extends Fragment implements TaskClickerMvpView {
+    Location currentLocation;
+    FusedLocationProviderClient fusedLocationProviderClient;
+    private static final int REQUEST_CODE = 101;
     private static final String TAG = "Page";
     LinearLayout img_layout;
     private static final int REQUEST_CAPTURE_MEDIA = 11111;
@@ -84,6 +101,8 @@ public class Pages_Fragment extends Fragment implements TaskClickerMvpView {
     private static Context app;
     private String file_name;
     private String mCurrentPhotoPath;
+    ImageView location_img;
+    TextInputEditText locatio_edittext;
     public static Context getconet(){
         return app;
 
@@ -103,6 +122,10 @@ public class Pages_Fragment extends Fragment implements TaskClickerMvpView {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.fragment_pages_, container, false);
+        fusedLocationProviderClient= LocationServices.getFusedLocationProviderClient(requireActivity());
+
+        location_img=view.findViewById(R.id.loction_img);
+        locatio_edittext=view.findViewById(R.id.locatio_edittext);
         selected_recy=view.findViewById(R.id.selected_problem_recy);
         name=view.findViewById(R.id.name);
         img_layout=view.findViewById(R.id.img_lay);
@@ -114,6 +137,12 @@ public class Pages_Fragment extends Fragment implements TaskClickerMvpView {
         custom_image_adapter=new Custom_Image_Adapter(image_list,getActivity());
         img_recy.setLayoutManager(new GridLayoutManager(getActivity(),3));
         img_recy.setAdapter(custom_image_adapter);
+        location_img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fetchLocation();
+            }
+        });
         img_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -139,9 +168,7 @@ public class Pages_Fragment extends Fragment implements TaskClickerMvpView {
                 BottomSheetDialog bottomSheet = new BottomSheetDialog(getActivity());
                 bottomSheet.setContentView(R.layout.problem_popup);
                 bottomSheet.show();
-
                 problem_recy=bottomSheet.findViewById(R.id.problem_recy);
-
                 list1=new ArrayList<>();
                 sub_list=new ArrayList<>();
                 sub_list.add(new Sub_problem("13267546723"));
@@ -168,7 +195,7 @@ public class Pages_Fragment extends Fragment implements TaskClickerMvpView {
                 adapter=new Custom_Problem_Adapter(getActivity(),list1);
                 problem_recy.setAdapter(adapter);
                 Button btn=bottomSheet.findViewById(R.id.btn);
-                btn.setOnClickListener(new View.OnClickListener() {
+                Objects.requireNonNull(btn).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         selected_recy.setLayoutManager(new StaggeredGridLayoutManager(3, LinearLayoutManager.VERTICAL));
@@ -235,9 +262,9 @@ public class Pages_Fragment extends Fragment implements TaskClickerMvpView {
     public void addToArray(String processedTask) {
 
         File imgFile = new  File(processedTask);
-
+        Log.i("gfg",processedTask);
         if(imgFile.exists()){
-
+            Log.i("gfg",processedTask);
             Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
 
             image_list.add(myBitmap);
@@ -295,5 +322,34 @@ public class Pages_Fragment extends Fragment implements TaskClickerMvpView {
             }
         }
     }
+    private void fetchLocation() {
+        if (ActivityCompat.checkSelfPermission(
+                getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
+            return;
+        }
+        Task<Location> task = fusedLocationProviderClient.getLastLocation();
+        ((Task) task).addOnSuccessListener(new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                if (location != null) {
+                    currentLocation = location;
+                    Geocoder geocoder=new Geocoder(getActivity(), Locale.getDefault());
+                    try {
+                        List<Address>addresses=geocoder.getFromLocation(location.getLatitude(),location.getLongitude(),1);
+                        locatio_edittext.setText(addresses.get(0).getAddressLine(0));
+                        Log.i("fdsfd",addresses.get(0).getAddressLine(0));
 
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+
+                    Toast.makeText(getActivity(), currentLocation.getLatitude() + "" + currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
+
+                }
+            }
+        });
+    }
 }

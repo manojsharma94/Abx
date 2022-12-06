@@ -21,6 +21,8 @@ public class MainActivity extends AppCompatActivity implements Checkiner {
 
         Sample.getActi(MainActivity.this);
 
+
+
        // startActivity(new Intent(MainActivity.this, Dashboard.class).putExtra("key","MainActivity"));
         Dashboard.liveData.observe(this, new Observer<String>() {
             @Override
